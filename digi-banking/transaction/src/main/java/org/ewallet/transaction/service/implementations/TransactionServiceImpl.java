@@ -16,16 +16,14 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 @Transactional
 @Slf4j
-public class TransactionService implements TransactionServiceInter {
+public class TransactionServiceImpl implements TransactionServiceInter {
     private final TransactionRepository transactionRepository;
     private final WalletApis walletApis;
 
@@ -33,7 +31,7 @@ public class TransactionService implements TransactionServiceInter {
     public TransactionDto createTransaction(TransactionDto transactionDto) {
         Transaction transaction = EntityMapping.transactionDtoToTransaction(transactionDto);
         transaction.setUuid(UUID.randomUUID().toString());
-        transaction.setCreatedAt(LocalDateTime.now(ZoneId.of("Africa/Casablanca")));
+        transaction.setCreatedAt(LocalDateTime.now(ZoneId.of("Asia/Kolkata")));
 
         try {
             transactionRepository.save(transaction);
@@ -97,7 +95,7 @@ public class TransactionService implements TransactionServiceInter {
             if( walletApis.getSingleWalletByOwnerReferenceApi(transactionDto.getOperatorReference()).getStatusCode().toString().startsWith("200") ){
                 WalletDto walletDto = EntityMapping
                         .objectToWalletDto(walletApis.getSingleWalletByOwnerReferenceApi(transactionDto.getOperatorReference()).getBody());
-                log.info("from test {}",walletDto);
+                log.info("from SingleWalletByOwnerReference {}",walletDto);
                 Double amount = isAmountValid(transactionDto.getAmount());
 
                 if(amount != null){
