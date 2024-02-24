@@ -1,0 +1,16 @@
+<configuration>
+    <!-- Define the appenders -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>[%d{dd-MM-yyyy HH:mm:ss.SSS}] [%-5level] [${SPRING_PROFILES_ACTIVE}] [${springAppName}]
+                [%X{traceId:-}] [%X{userId}] [%X{URL}] [%thread] [%lo{10}:%M - %msg]%n
+            </pattern>
+        </encoder>
+    </appender>
+
+    <!-- Define the root logger level and appender -->
+    <root level="info">
+        <appender-ref ref="CONSOLE"/>
+    </root>
+
+</configuration>
