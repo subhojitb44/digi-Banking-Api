@@ -1,23 +1,13 @@
 package org.ewallet.authentication.entities;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.SequenceGenerator;
-import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import org.ewallet.authentication.enums.AvailabilityStateEnum;
+import org.ewallet.authentication.enums.RoleEnum;
+import org.ewallet.authentication.repositories.SequenceRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
+import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -25,52 +15,50 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.List;
 
-
-@Entity
+/**
+ * Created by subho
+ * Date: 1/29/2024
+ */
 @Builder
 @Getter
 @Setter
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "_user")
+@Document(collection = "app_user")
 public class AppUser implements UserDetails {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "app_user_seq")
-    @SequenceGenerator(name = "app_user_seq", allocationSize = 1)
-    @Column(nullable = false)
-    private Long id;
+    private String ccId;
 
-    @Column(name = "uuid", nullable = false, unique = true)
-    private String uuid;
-
-    @Column(nullable = false, length = 50)
     private String username;
 
-    @Column(nullable = false, length = 100)
     private String password;
 
-    @Column(length = 50)
     private String name;
 
-    @Column(length = 50)
     private String phone;
 
-    @Column(length = 30)
     private String cin;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
     private AvailabilityStateEnum status;
 
-    @ManyToOne
-    @JoinColumn(name = "role_id")
-    private Role role;
+    private List<RoleEnum> role;
+    @Transient
+    @Autowired
+    private SequenceRepository sequenceRepository;
 
+    // Implement UserDetails methods
+
+    public AppUser(String name, String username) {
+        this.ccId = generateId(name, username);
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(role.getName().name()));
+        return role.stream()
+                .map(role -> new SimpleGrantedAuthority(role.name()))
+                .toList();
     }
 
     @Override
@@ -101,5 +89,15 @@ public class AppUser implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    private String generateId(String name, String username) {
+        String prefix = name.substring(0, Math.min(name.length(), 3)).toUpperCase();
+        Sequence sequence = sequenceRepository.findByName(username);
+        long nextValue = sequence != null ? sequence.getValue() + 1 : 1;
+        sequence.setName(username);
+        sequence.setValue(nextValue);
+        sequenceRepository.save(sequence); // Save the updated sequence
+        return prefix + String.format("%05d", nextValue);
     }
 }

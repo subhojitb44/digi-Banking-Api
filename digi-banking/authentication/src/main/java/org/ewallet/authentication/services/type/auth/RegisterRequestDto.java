@@ -1,7 +1,7 @@
-package org.authentication.services.type.auth;
+package org.ewallet.authentication.services.type.auth;
 
 import lombok.*;
-import org.authentication.enums.RoleEnum;
+import org.ewallet.authentication.enums.RoleEnum;
 
 /**
  * Created by subho

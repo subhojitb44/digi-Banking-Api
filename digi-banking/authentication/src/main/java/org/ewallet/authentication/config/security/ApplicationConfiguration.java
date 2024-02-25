@@ -1,7 +1,7 @@
-package org.authentication.config.security;
+package org.ewallet.authentication.config.security;
 
 import lombok.RequiredArgsConstructor;
-import org.authentication.services.interfaces.UserServiceInterface;
+import org.ewallet.authentication.services.interfaces.UserServiceInterface;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;

@@ -1,4 +1,4 @@
-package org.authentication.services.type.auth;
+package org.ewallet.authentication.services.type.auth;
 
 import lombok.*;
 

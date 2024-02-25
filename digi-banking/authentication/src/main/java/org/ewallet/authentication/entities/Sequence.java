@@ -1,4 +1,4 @@
-package org.authentication.entities;
+package org.ewallet.authentication.entities;
 
 import lombok.*;
 import org.springframework.data.annotation.Id;

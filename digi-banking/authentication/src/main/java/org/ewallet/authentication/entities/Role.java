@@ -1,25 +1,20 @@
 package org.ewallet.authentication.entities;
 
-import jakarta.persistence.*;
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import org.ewallet.authentication.enums.RoleEnum;
 
-
-@Entity
+/**
+ * Created by subho
+ * Date: 1/29/2024
+ */
 @Getter
-@ToString
+@Setter
 @NoArgsConstructor
-@Table(name = "_role")
+@ToString
 public class Role {
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "role_seq")
-    @SequenceGenerator(name = "role_seq", allocationSize = 1)
-    @Column(nullable = false)
-    private Integer id;
-
-    @Setter(AccessLevel.NONE)
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false, unique = true)
     private RoleEnum name;
 
     public Role(RoleEnum name) {

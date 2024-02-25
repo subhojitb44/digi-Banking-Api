@@ -1,10 +1,10 @@
-package org.authentication.services.implementations;
+package org.ewallet.authentication.services.implementations;
 
 import lombok.RequiredArgsConstructor;
-import org.authentication.entities.AppUser;
-import org.authentication.repositories.UserRepository;
-import org.authentication.services.interfaces.UserServiceInterface;
-import org.authentication.services.security.JwtServiceImpl;
+import org.ewallet.authentication.entities.AppUser;
+import org.ewallet.authentication.repositories.UserRepository;
+import org.ewallet.authentication.services.interfaces.UserServiceInterface;
+import org.ewallet.authentication.services.security.JwtServiceImpl;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

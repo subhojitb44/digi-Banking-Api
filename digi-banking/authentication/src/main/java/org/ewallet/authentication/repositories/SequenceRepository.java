@@ -1,6 +1,6 @@
-package org.authentication.repositories;
+package org.ewallet.authentication.repositories;
 
-import org.authentication.entities.Sequence;
+import org.ewallet.authentication.entities.Sequence;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 /**

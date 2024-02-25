@@ -2,25 +2,26 @@ package org.ewallet.authentication.controllers;
 
 import jakarta.websocket.server.PathParam;
 import lombok.RequiredArgsConstructor;
-
 import lombok.extern.slf4j.Slf4j;
 import org.ewallet.authentication.entities.AppUser;
-import org.ewallet.authentication.services.dtos.auth.AuthenticationRequestDto;
-import org.ewallet.authentication.services.dtos.auth.TokenRequestResponse;
-import org.ewallet.authentication.services.dtos.auth.RegisterRequestDto;
-import org.ewallet.authentication.services.implementations.AuthenticationService;
+import org.ewallet.authentication.services.implementations.AuthenticationServiceImpl;
+import org.ewallet.authentication.services.type.auth.AuthenticationRequestDto;
+import org.ewallet.authentication.services.type.auth.RegisterRequestDto;
+import org.ewallet.authentication.services.type.auth.TokenRequestResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-@RestController @RequiredArgsConstructor @Slf4j
+/**
+ * Created by subho
+ * Date: 1/29/2024
+ */
+@RestController
+@RequiredArgsConstructor
+@Slf4j
 @RequestMapping("/api/authenticate")
 public class AuthenticationController {
-    private final AuthenticationService service;
+    private final AuthenticationServiceImpl service;
 
     @PostMapping("/register")
     public ResponseEntity<Object> register(@RequestBody RegisterRequestDto request) {
@@ -29,6 +30,7 @@ public class AuthenticationController {
                 ? ResponseEntity.status(HttpStatus.BAD_REQUEST).body("This username is already taken try another one")
                 : ResponseEntity.status(HttpStatus.CREATED).body(authResponse);
     }
+
     @PostMapping("/login")
     public ResponseEntity<Object> authenticate(@RequestBody AuthenticationRequestDto request) {
         Object authResponse = service.authenticate(request);
@@ -39,9 +41,20 @@ public class AuthenticationController {
 
         return ResponseEntity.ok(authResponse);
     }
+
     @GetMapping("/validate-token")
-    public AppUser validateToken(@PathParam("token") String token){
-        log.info("Received token {}",token);
+    public AppUser validateToken(@PathParam("token") String token) {
+        log.info("Received token {}", token);
         return service.validateToken(token);
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout(@PathParam("token") String token) {
+        boolean logoutSuccess = service.logout(token);
+        if (logoutSuccess) {
+            return ResponseEntity.ok("Logout successful");
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Logout failed");
+        }
     }
 }
